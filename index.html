@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inženýrský Vesmírný Program</title>
+    <title>Inženýrský Vesmírný Program - C.O.S.M.O.S.</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -13,6 +13,7 @@
             --success: #22c55e;
             --danger: #ef4444;
             --warning: #eab308;
+            --purple: #a855f7;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -27,16 +28,17 @@
         .container { max-width: 1000px; margin: 0 auto; }
         .card { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 20px; }
         
-        .btn { background: var(--accent); color: var(--bg-color); border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: opacity 0.2s; font-size: 16px; }
+        .btn { background: var(--accent); color: var(--bg-color); border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: opacity 0.2s; font-size: 16px; margin: 5px 0; }
         .btn:hover { opacity: 0.9; }
         .btn:disabled { background: #64748b; cursor: not-allowed; }
         .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
 
         /* Výběr role */
-        .role-select-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .role-card { background: var(--card-bg); border: 2px solid #334155; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+        .role-select-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .role-card { background: var(--card-bg); border: 2px solid #334155; padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
         .role-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .role-icon { font-size: 48px; margin-bottom: 15px; }
+        .role-icon { font-size: 40px; margin-bottom: 10px; }
 
         /* Společné herní prvky */
         .hidden { display: none !important; }
@@ -46,9 +48,9 @@
         .progress-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.1s linear; }
 
         /* Mini-hry specifické */
-        .drag-zone { display: flex; gap: 15px; margin: 15px 0; }
-        .drag-item { background: #475569; padding: 15px; border-radius: 8px; cursor: grab; user-select: none; }
-        .drop-slot { background: #0f172a; border: 2px dashed #475569; min-width: 120px; min-height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-align: center; font-size: 12px; padding: 5px; }
+        .drag-zone { display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+        .drag-item { background: #475569; padding: 12px; border-radius: 8px; cursor: grab; user-select: none; }
+        .drop-slot { background: #0f172a; border: 2px dashed #475569; min-width: 140px; min-height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-align: center; font-size: 13px; padding: 10px; }
         
         .slider-group { margin: 15px 0; }
         .slider-group label { display: block; margin-bottom: 5px; }
@@ -56,18 +58,18 @@
 
         .valve-indicator { font-size: 24px; font-weight: bold; text-align: center; padding: 10px; margin: 10px 0; border-radius: 6px; }
 
-        /* CAD Skládačka */
-        .cad-container { display: flex; gap: 20px; margin: 15px 0; background: #0f172a; padding: 20px; border-radius: 8px; min-height: 200px; }
-        .cad-parts { display: flex; flex-direction: column; gap: 10px; }
-        .cad-slots { position: relative; flex-grow: 1; border: 1px solid #334155; display: flex; flex-direction: column; gap: 15px; justify-content: center; align-items: center; }
-        .cad-target { width: 80%; height: 50px; border: 2px dashed #475569; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+        /* CAD & Puzzle Skládačky */
+        .cad-container { display: flex; gap: 20px; margin: 15px 0; background: #0f172a; padding: 20px; border-radius: 8px; min-height: 200px; flex-wrap: wrap; }
+        .cad-parts { display: flex; flex-direction: column; gap: 10px; min-width: 200px; }
+        .cad-slots { position: relative; flex-grow: 1; border: 1px solid #334155; display: flex; flex-direction: column; gap: 15px; justify-content: center; align-items: center; padding: 15px; background: rgba(0,0,0,0.3); }
+        .cad-target { width: 100%; height: 50px; border: 2px dashed #475569; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
 
         /* Rytmická hra */
         .rhythm-area { background: #0f172a; height: 100px; border-radius: 8px; position: relative; overflow: hidden; margin: 15px 0; display: flex; align-items: center; justify-content: center;}
         .rhythm-dot { width: 20px; height: 20px; background: var(--accent); border-radius: 50%; position: absolute; left: 0; top: 40px; }
         .rhythm-target { width: 40px; height: 40px; border: 3px solid var(--success); border-radius: 50%; position: absolute; left: 80%; top: 30px; }
 
-        /* Letový graf */
+        /* Canvas / Grafy */
         .canvas-container { background: #0f172a; border-radius: 8px; padding: 10px; text-align: center; margin: 15px 0; }
         canvas { background: #020617; border: 1px solid #1e293b; max-width: 100%; }
 
@@ -75,6 +77,9 @@
         .stats-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .stats-table th, .stats-table td { padding: 12px; border: 1px solid #334155; text-align: left; }
         .stats-table th { background: #0f172a; color: var(--accent); }
+
+        /* Pomocné boxy pro rozdělení energie / budgetů */
+        .budget-bar-container { display: flex; height: 25px; background: #334155; border-radius: 6px; overflow: hidden; margin: 15px 0; font-weight: bold; text-align: center; line-height: 25px; font-size: 12px; color: #000; }
     </style>
 </head>
 <body>
@@ -83,51 +88,78 @@
         <header>
             <div>
                 <h1>C.O.S.M.O.S.</h1>
-                <p>Integrovaný inženýrský systém řízení misí</p>
+                <p>Integrovaný inženýrský systém řízení misí (9 specializací)</p>
             </div>
             <button class="admin-btn" onclick="openAdmin()" title="Administrace a Statistiky">👤</button>
         </header>
 
-        <!-- Tlačítko pro návrat k výběru rolí (vždy viditelné v herním režimu) -->
+        <!-- Tlačítko pro návrat k výběru rolí -->
         <div id="backToRolesNav" class="hidden" style="margin-bottom: 15px;">
             <button class="btn btn-danger" onclick="resetToRoleSelection()">← Opustit pracoviště / Změnit inženýra</button>
         </div>
 
-        <!-- SELEKCE ROLÍ -->
+        <!-- SELEKCE ROLÍ (9 INŽENÝRŮ) -->
         <div id="roleSelection">
-            <h2 style="text-align: center; margin-bottom: 10px;">Vyberte specializaci inženýra</h2>
+            <h2 style="text-align: center; margin-bottom: 15px;">Vyberte specializaci inženýra</h2>
             <div class="role-select-grid">
                 <div class="role-card" onclick="startRole('materials')">
                     <div class="role-icon">🧪</div>
-                    <h3>Materiálový Inženýr</h3>
-                    <p style="color: #94a3b8; font-size: 14px; margin-top: 10px;">Syntéza v plazmové peci a metalurgie ochranných štítů.</p>
+                    <h3>1. Materiálový Inženýr</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Syntéza v plazmové peci a metalurgie ochranných štítů.</p>
                 </div>
                 <div class="role-card" onclick="startRole('mechanical')">
                     <div class="role-icon">⚙️</div>
-                    <h3>Strojní Inženýr</h3>
-                    <p style="color: #94a3b8; font-size: 14px; margin-top: 10px;">3D CAD konstrukce, strukturální nýtování a zátěžové testy.</p>
+                    <h3>2. Strojní Inženýr</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">3D CAD konstrukce, strukturální nýtování a zátěžové testy.</p>
                 </div>
                 <div class="role-card" onclick="startRole('aerospace')">
                     <div class="role-icon">🚀</div>
-                    <h3>Letecký Inženýr</h3>
-                    <p style="color: #94a3b8; font-size: 14px; margin-top: 10px;">Výpočty atmosférických vektorů a kompilace autopilotních systémů.</p>
+                    <h3>3. Letecký Inženýr</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Výpočty atmosférických vektorů a kompilace autopilotních systémů.</p>
+                </div>
+                <div class="role-card" onclick="startRole('software')">
+                    <div class="role-icon">💻</div>
+                    <h3>4. Softwarový Inženýr</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Propojování senzorických bloků, správa RAM a ladění bugů.</p>
+                </div>
+                <div class="role-card" onclick="startRole('gnc')">
+                    <div class="role-icon">🗺️</div>
+                    <h3>5. Inženýr řídicích systémů</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Plánování trajektorií, gravitační pole a manévrovací uzly.</p>
+                </div>
+                <div class="role-card" onclick="startRole('electrical')">
+                    <div class="role-icon">⚡</div>
+                    <h3>6. Elektrotechnický Inženýr</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Schémata zapojení, distribuce energie a testy pod napětím.</p>
+                </div>
+                <div class="role-card" onclick="startRole('eclss')">
+                    <div class="role-icon">💨</div>
+                    <h3>7. Inženýr životních podmínek</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Recyklace vzduchu a kapalin, CO2 filtry, zátěžové testy posádky.</p>
+                </div>
+                <div class="role-card" onclick="startRole('safety')">
+                    <div class="role-icon">🛡️</div>
+                    <h3>8. Inženýr spolehlivosti</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Destrukční simulace, Monte Carlo výpočty a bezpečnostní audity.</p>
+                </div>
+                <div class="role-card" onclick="startRole('systems')">
+                    <div class="role-icon">👁️‍عون</div>
+                    <h3>9. Systémový Inženýr</h3>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Velitel týmu. Správa celkového rozpočtu, váhy a finální READY start.</p>
                 </div>
             </div>
         </div>
 
         <!-- 1. MATERIÁLOVÝ INŽENÝR -->
         <div id="materialsRole" class="card hidden">
-            <h2>🧪 Pracoviště: Syntéza v plazmové peci</h2>
-            <p style="color: #94a3b8; margin-bottom: 15px;">Ovládací panel molekulární pece.</p>
-
+            <h2>🧪 1. Materiálový Inženýr: Syntéza v plazmové peci</h2>
             <div id="mat-step1">
                 <h3>Krok 1: Sběr surovin ze skladu</h3>
                 <div class="status-box" id="mat-storage-status">Sklad uzavřen. Vyberte požadované materiály.</div>
                 <button class="btn" onclick="collectMaterials()">Otevřít sklad a nabrat (10kg Uhlík, 5kg Křemík)</button>
             </div>
-
             <div id="mat-step2" class="hidden">
-                <h3>Krok 2: Plnění reaktoru (Přetáhněte suroviny do správných slotů)</h3>
+                <h3>Krok 2: Plnění reaktoru (Přetáhněte suroviny)</h3>
                 <div class="drag-zone">
                     <div class="drag-item" draggable="true" id="item-carbon" ondragstart="drag(event)">10 kg Uhlíkových vláken</div>
                     <div class="drag-item" draggable="true" id="item-silicon" ondragstart="drag(event)">5 kg Křemíkové pryskyřice</div>
@@ -137,7 +169,6 @@
                     <div class="drop-slot" id="slotB" ondragover="allowDrop(event)" ondrop="drop(event, 'Silicon')">Slot B: Křemík</div>
                 </div>
             </div>
-
             <div id="mat-step3" class="hidden">
                 <h3>Krok 3: Regulace prostředí pece</h3>
                 <p>Cílová teplota: 1 450 °C | Cílový tlak: 5 barů</p>
@@ -151,30 +182,26 @@
                 </div>
                 <button class="btn" id="start-synthesis-btn" onclick="startSynthesis()">SPUSTIT SYNTÉZU</button>
             </div>
-
             <div id="mat-step4" class="hidden">
                 <h3>Krok 4: Průběh craftingu a stabilizace tlaku</h3>
                 <p>Udržujte tlak klikáním na ventil v <strong>zelených číslech (4 - 6 barů)</strong>!</p>
                 <div class="valve-indicator" id="valve-display">Tlak: 5 barů</div>
                 <button class="btn" onclick="ventPressure()">Odvětrat ventil (-1.5 bar)</button>
                 <div class="progress-bar"><div class="progress-fill" id="mat-progress"></div></div>
-                <div id="mat-timer-text">Zbejvá času: 45s</div>
+                <div id="mat-timer-text">Zbývá času: 45s</div>
             </div>
         </div>
 
         <!-- 2. STROJNÍ INŽENÝR -->
         <div id="mechanicalRole" class="card hidden">
-            <h2>⚙️ Pracoviště: Montážní hangár a vibrační test</h2>
-            
+            <h2>⚙️ 2. Strojní Inženýr: Montáž a vibrační test</h2>
             <div id="mech-step1">
                 <h3>Krok 1: Převzetí komponentů</h3>
                 <button class="btn" onclick="mechTakeMaterials()">Otevřít sdílenou bednu a vzít díly</button>
                 <div id="mech-materials-status" class="status-box">Čekání na dodávky z výroby...</div>
             </div>
-
             <div id="mech-step2" class="hidden">
                 <h3>Krok 2: 3D CAD Sestavení spodku kapsle</h3>
-                <p>Přetáhněte komponenty na správná místa v digitálním schématu trupu lodi.</p>
                 <div class="cad-container">
                     <div class="cad-parts">
                         <div class="drag-item" draggable="true" id="cad-shield" ondragstart="drag(event)">Keramické destičky štítu</div>
@@ -186,21 +213,18 @@
                     </div>
                 </div>
             </div>
-
             <div id="mech-step3" class="hidden">
                 <h3>Krok 3: Robotické nýtování trupu</h3>
-                <p>Zmáčkni <strong>MEZERNÍK</strong> přesně ve chvíli, kdy kulička proletí zeleným terčem! Musíš trefit aspoň 10 nýtů.</p>
+                <p>Zmáčkni <strong>MEZERNÍK</strong> přesně ve chvíli, kdy kulička proletí zeleným terčem!</p>
                 <div class="status-box">Úspěšné nýty: <span id="rivet-count">0</span> / 10</div>
                 <div class="rhythm-area">
                     <div class="rhythm-target"></div>
                     <div class="rhythm-dot" id="rhythmDot"></div>
                 </div>
-                <button class="btn" onclick="handleRivetKey()" style="margin-bottom:10px;">Nýtovat (nebo stiskni mezerník)</button>
+                <button class="btn" onclick="handleRivetKey()">Nýtovat (nebo stiskni mezerník)</button>
             </div>
-
             <div id="mech-step4" class="hidden">
                 <h3>Krok 4: Vibrační test destrukce při startu</h3>
-                <p>Simulace extrémních vibrací během zážehu prvního stupně.</p>
                 <div class="status-box" id="vib-status">Příprava hydraulické stolice...</div>
                 <div class="progress-bar"><div class="progress-fill" id="mech-progress"></div></div>
                 <div id="mech-timer-text">Doba testu: 20s</div>
@@ -210,45 +234,202 @@
 
         <!-- 3. LETECKÝ INŽENÝR -->
         <div id="aerospaceRole" class="card hidden">
-            <h2>🚀 Řídicí středisko: Kalibrace trajektorie</h2>
-
+            <h2>🚀 3. Letecký Inženýr: Kalibrace trajektorie</h2>
             <div id="aero-step1">
                 <h3>Krok 1: Nahrání specifikací plavidla</h3>
-                <button class="btn" onclick="aeroLoadSpecs()">Načíst telemetrická data od Strojního oddělení</button>
+                <button class="btn" onclick="aeroLoadSpecs()">Načíst telemetrická data</button>
                 <div id="aero-specs-status" class="status-box">Čekání na finalizaci lodi...</div>
             </div>
-
             <div id="aero-step2" class="hidden">
                 <h3>Krok 2: Zadání parametrů planety</h3>
-                <p>Nakonfigurujte simulátor návratu pro planetu Země.</p>
-                <div style="margin: 10px 0;">
-                    <label>Cíl: <strong>Země</strong></label><br>
-                    <label>Atmosféra: <strong>Hustá</strong></label><br>
-                    <label>Vstupní rychlost: <strong>7 800 m/s</strong></label>
-                </div>
                 <button class="btn" onclick="document.getElementById('aero-step2').classList.add('hidden'); document.getElementById('aero-step3').classList.remove('hidden'); initAeroCanvas();">Inicializovat matematický vektor</button>
             </div>
-
             <div id="aero-step3" class="hidden">
                 <h3>Krok 3: Výpočet re-entry koridoru</h3>
-                <p>Pomocí posuvníku napasujte zelenou linku trajektorie přesně doprostřed re-entry koridoru (úhel mezi 6.0° a 6.5°).</p>
-                <div class="canvas-container">
-                    <canvas id="aeroCanvas" width="500" height="250"></canvas>
-                </div>
+                <div class="canvas-container"><canvas id="aeroCanvas" width="500" height="250"></canvas></div>
                 <div class="slider-group">
                     <label>Úhel sestupu: <span id="angle-val">4.0</span>°</label>
                     <input type="range" id="aero-angle" min="20" max="90" value="40" step="1" oninput="drawAeroTrajectory()">
                 </div>
                 <button class="btn" id="generate-code-btn" disabled onclick="startAeroCompilation()">GENEROVAT LETOVÝ KÓD</button>
             </div>
-
             <div id="aero-step4" class="hidden">
                 <h3>Krok 4: Kompilace palubního softwaru</h3>
-                <p>Superpočítač nahrává šifrovaná data na palubní počítač rakety...</p>
                 <div class="progress-bar"><div class="progress-fill" id="aero-progress"></div></div>
-                <div id="aero-timer-text">Kompilace: 0% (Zbývá 30s)</div>
-                <div id="aero-result-box" class="status-box hidden" style="color: var(--success); font-weight: bold; font-size: 18px; text-align: center;">
-                    LET RE-ENTRY PŘIPRAVEN – DATA SYNCHRONIZOVÁNA
+                <div id="aero-timer-text">Kompilace: 0%</div>
+                <div id="aero-result-box" class="status-box hidden" style="color: var(--success); font-weight: bold; text-align: center;">LET RE-ENTRY PŘIPRAVEN</div>
+            </div>
+        </div>
+
+        <!-- 4. SOFTWAROVÝ INŽENÝR -->
+        <div id="softwareRole" class="card hidden">
+            <h2>💻 4. Softwarový Inženýr: Vývoj firmwaru</h2>
+            <div id="sw-step1">
+                <h3>Krok 1: Výběr řídicího modulu</h3>
+                <button class="btn" onclick="swSelectModule('Autonomní dokovací systém')">Autonomní dokovací systém</button>
+                <button class="btn" onclick="swSelectModule('Nouzový re-entry subsystém')">Nouzový re-entry subsystém</button>
+            </div>
+            <div id="sw-step2" class="hidden">
+                <h3>Krok 2: Logická skládačka (Propojení Sensor -> Motor)</h3>
+                <p>Přetáhněte <strong>Senzor přiblížení</strong> do <strong>Slotu A</strong> a <strong>Zážeh trysky</strong> do <strong>Slotu B</strong>.</p>
+                <div class="drag-zone">
+                    <div class="drag-item" draggable="true" id="sw-i1" ondragstart="drag(event)">Senzor přiblížení [INPUT]</div>
+                    <div class="drag-item" draggable="true" id="sw-i2" ondragstart="drag(event)">Zážeh trysky [ACTION]</div>
+                    <div class="drag-item" draggable="true" id="sw-i3" ondragstart="drag(event)">Falešný datový šum [NULL]</div>
+                </div>
+                <div class="drag-zone">
+                    <div class="drop-slot" id="swSlotA" ondragover="allowDrop(event)" ondrop="dropSw(event, 'A')">Vstup: Senzor (Slot A)</div>
+                    <div class="drop-slot" id="swSlotB" ondragover="allowDrop(event)" ondrop="dropSw(event, 'B')">Výstup: Akce (Slot B)</div>
+                </div>
+            </div>
+            <div id="sw-step3" class="hidden">
+                <h3>Krok 3: Optimalizace využití paměti RAM</h3>
+                <p>Nastavte alokaci vyrovnávací paměti. Nesmí překročit <strong>128 kB RAM</strong>!</p>
+                <div class="slider-group">
+                    <label>Alokace vyrovnávací paměti: <span id="ram-val">256</span> kB RAM</label>
+                    <input type="range" id="sw-ram-slider" min="16" max="512" value="256" oninput="document.getElementById('ram-val').innerText = this.value">
+                </div>
+                <button class="btn" onclick="swCompileCode()">KOMPILOVAT FIRMWARE</button>
+            </div>
+            <div id="sw-step4" class="hidden">
+                <h3>Krok 4: Kompilace a Unit testy</h3>
+                <div class="status-box" id="sw-compile-status">Spouštím GCC kompilátor...</div>
+                <div class="progress-bar"><div class="progress-fill" id="sw-progress"></div></div>
+                <div id="sw-timer-text">Zbývá: 30s</div>
+            </div>
+        </div>
+
+        <!-- 5. INŽENÝR ŘÍDICÍCH SYSTÉMŮ (GNC) -->
+        <div id="gncRole" class="card hidden">
+            <h2>🗺️ 5. Inženýr řídicích systémů: Výpočet manévrů</h2>
+            <div id="gnc-step1">
+                <h3>Krok 1: Nastavení letového plánu</h3>
+                <p>Zadejte operační sektory letu.</p>
+                <button class="btn" onclick="gncInitMap()">Vypočítat gravitační pole (Země -> Mars)</button>
+            </div>
+            <div id="gnc-step2" class="hidden">
+                <h3>Krok 2: Umístění manévrovacích uzlů</h3>
+                <p>Nastavte uzel zážehu motorů tak, aby loď minula gravitační studnu (ideální poloha posuvníku je 70-80%).</p>
+                <div class="slider-group">
+                    <label>Pozice uzlu (Vektor delta-V): <span id="node-val">10</span>%</label>
+                    <input type="range" id="gnc-node-slider" min="0" max="100" value="10" oninput="document.getElementById('node-val').innerText = this.value">
+                </div>
+                <button class="btn" onclick="gncStartSimulation()">SPUSTIT SIMULACI TRAJEKTORIE</button>
+            </div>
+            <div id="gnc-step3" class="hidden">
+                <h3>Krok 3: Analýza gravitačního pole</h3>
+                <div class="status-box" id="gnc-sim-status">Sleduji telemetrický vektor...</div>
+                <div class="progress-bar"><div class="progress-fill" id="gnc-progress"></div></div>
+                <div id="gnc-timer-text">Simulace: 20s</div>
+            </div>
+        </div>
+
+        <!-- 6. ELEKTROTECHNICKÝ INŽENÝR -->
+        <div id="electricalRole" class="card hidden">
+            <h2>⚡ 6. Elektrotechnický Inženýr: Distribuce energie</h2>
+            <div id="elec-step1">
+                <h3>Krok 1: Inicializace schématu zapojení lodi</h3>
+                <button class="btn" onclick="elecLoadCircuit()">Otevřít hlavní energetickou sběrnici</button>
+            </div>
+            <div id="elec-step2" class="hidden">
+                <h3>Krok 2: Vyvážení zatížení větví (Celkem 100 %)</h3>
+                <p>Rozdělte energii přesně podle protokolu: <strong>Motory: 40 %, Podpora života: 30 %, Věda: 30 %</strong>.</p>
+                <div class="slider-group">
+                    <label>Motory: <span id="e-m-val">33</span> %</label>
+                    <input type="range" id="elec-m" min="0" max="100" value="33" oninput="balanceElec()">
+                </div>
+                <div class="slider-group">
+                    <label>Podpora života: <span id="e-l-val">33</span> %</label>
+                    <input type="range" id="elec-l" min="0" max="100" value="33" oninput="balanceElec()">
+                </div>
+                <div class="slider-group">
+                    <label>Věda: <span id="e-s-val">34</span> %</label>
+                    <input type="range" id="elec-s" min="0" max="100" value="34" oninput="balanceElec()">
+                </div>
+                <div class="budget-bar-container">
+                    <div id="bar-m" style="background: var(--accent); width: 33.3%;">M</div>
+                    <div id="bar-l" style="background: var(--success); width: 33.3%;">L</div>
+                    <div id="bar-s" style="background: var(--purple); width: 33.3%;">S</div>
+                </div>
+                <div id="elec-total-warn" style="color: var(--danger); font-weight:bold; margin-bottom:10px;">Celkový odběr musí být přesně 100 %!</div>
+                <button class="btn" id="elec-test-btn" disabled onclick="elecStartTest()">TEST POD NAPĚTÍM</button>
+            </div>
+            <div id="elec-step3" class="hidden">
+                <h3>Krok 3: Analýza osciloskopu a stabilita sítě</h3>
+                <p>Sledujte kolísání napětí generátoru...</p>
+                <div class="status-box" id="elec-status" style="font-family: monospace;">[Proud stabilní]</div>
+                <div class="progress-bar"><div class="progress-fill" id="elec-progress"></div></div>
+                <div id="elec-timer-text">Doba měření: 15s</div>
+            </div>
+        </div>
+
+        <!-- 7. INŽENÝR ŽIVOTNÍCH PODMÍNEK (ECLSS) -->
+        <div id="eclssRole" class="card hidden">
+            <h2>💨 7. Inženýr životních podmínek: Podpora života</h2>
+            <div id="eclss-step1">
+                <h3>Krok 1: Příprava skrubrů a plynů</h3>
+                <button class="btn" onclick="eclssInitChamber()">Vložit CO2 filtry a kyslíkové nádrže do komory</button>
+            </div>
+            <div id="eclss-step2" class="hidden">
+                <h3>Krok 2: Spuštění zátěžového testu biosféry</h3>
+                <p>Do komory je uzavřen testovací subjekt. Sledujte regeneraci vzduchu po dobu 40 sekund.</p>
+                <button class="btn btn-success" onclick="eclssStartTest()">SPUSTIT ZÁTĚŽOVÝ TEST (40s)</button>
+            </div>
+            <div id="eclss-step3" class="hidden">
+                <h3>Krok 3: Monitorování plynů a čištění filtrů</h3>
+                <p>Hladina CO2 nesmí překročit <strong>500 ppm</strong>! Pokud stoupá, ihned klikněte na pročištění!</p>
+                <div class="status-box" id="eclss-monitor" style="font-size: 18px; font-weight: bold; text-align: center;">CO2: 250 ppm | O2: 21%</div>
+                <button class="btn btn-danger" onclick="eclssCleanFilters()">MANUÁLNĚ VYČISTIT FILTRY (-120 ppm CO2)</button>
+                <div class="progress-bar"><div class="progress-fill" id="eclss-progress"></div></div>
+                <div id="eclss-timer-text">Čas testu: 40s</div>
+            </div>
+        </div>
+
+        <!-- 8. INŽENÝR SPOLEHLIVOSTI A BEZPEČNOSTI -->
+        <div id="safetyRole" class="card hidden">
+            <h2>🛡️ 8. Inženýr spolehlivosti a bezpečnosti: Audit rizik</h2>
+            <div id="safety-step1">
+                <h3>Krok 1: Import integrovaného modelu plavidla</h3>
+                <button class="btn" onclick="safetyLoadModel()">Načíst agregovaná data podsystémů</button>
+                <div id="safety-model-status" class="status-box">Čekání na síťový build...</div>
+            </div>
+            <div id="safety-step2" class="hidden">
+                <h3>Krok 2: Volba destruktivního scénáře</h3>
+                <select id="safety-scenario" style="padding: 10px; background: #0f172a; color: white; border-radius: 6px; border: 1px solid #334155; width: 100%; margin-bottom: 15px;">
+                    <option value="Zásah mikrometeoritem do elektroinstalace">Zásah mikrometeoritem do elektroinstalace</option>
+                    <option value="Zaseknutí odvzdušňovacího ventilu 3">Zaseknutí odvzdušňovacího ventilu 3</option>
+                    <option value="Termální šok kryogenní nádrže">Termální šok kryogenní nádrže</option>
+                </select>
+                <button class="btn" onclick="safetyStartMonteCarlo()">SIMULOVAT KATASTROFU (Monte Carlo)</button>
+            </div>
+            <div id="safety-step3" class="hidden">
+                <h3>Krok 3: Výpočet stochastických matic spolehlivosti</h3>
+                <p>Probíhá 50 000 iteračních simulací selhání prvků...</p>
+                <div class="progress-bar"><div class="progress-fill" id="safety-progress"></div></div>
+                <div id="safety-timer-text">Provádím výpočty: 35s</div>
+            </div>
+        </div>
+
+        <!-- 9. SYSTÉMOVÝ INŽENÝR -->
+        <div id="systemsRole" class="card hidden">
+            <h2>👁️‍🗨️ 9. Systémový Inženýr: Velitelský Dashboard</h2>
+            <div id="sys-dashboard">
+                <h3>Manažerský přehled stavu parametrů lodi</h3>
+                <div class="status-box" style="line-height: 1.6;">
+                    • Celková hmotnost: <strong id="sys-mass">4.2 tuny</strong> (Limit: 4.5t)<br>
+                    • Rozpočtová alokace: <strong id="sys-budget">92 %</strong> (Limit: 100%)<br>
+                    • Stav systémů: <span id="sys-ready-status" style="color:var(--warning); font-weight:bold;">ČEKÁ SE NA SCHVÁLENÍ ZMĚN</span>
+                </div>
+                <button class="btn" onclick="sysApproveChanges()">SCHVÁLIT ZMĚNY A REKOMPILOVAT ROZPOČET (10s)</button>
+                
+                <div id="sys-compiling" class="hidden">
+                    <div class="progress-bar"><div class="progress-fill" id="sys-progress"></div></div>
+                    <p id="sys-timer-text">Kompiluji globální budget...</p>
+                </div>
+
+                <div id="sys-final-zone" class="hidden" style="margin-top: 20px; border-top: 2px dashed #334155; padding-top: 20px; text-align: center;">
+                    <h2 style="color: var(--success); margin-bottom: 15px;">VŠECHNY KONTROLY DOKONČENY</h2>
+                    <button class="btn btn-success" style="font-size: 24px; padding: 20px 40px;" onclick="sysLaunchRocket()">🚀 ODPAILIT RAKETU (LAUNCH) 🚀</button>
                 </div>
             </div>
         </div>
@@ -282,7 +463,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Tvoje Firebase konfigurace
         const firebaseConfig = {
             apiKey: "AIzaSyAxq7bHkctTOJk9WHweOad_c82GSKYccgk",
             authDomain: "inzenyrstvi-9cc7d.firebaseapp.com",
@@ -292,11 +472,9 @@
             appId: "1:341359058136:web:ac3dd7d29f2ed7b1a28bad"
         };
 
-        // Inicializace Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Globální export pro použití ve standardním JS
         window.logToFirebase = async function(engineer, action, result) {
             try {
                 await addDoc(collection(db, "logs"), {
@@ -310,7 +488,6 @@
             }
         }
 
-        // Live sledování statistik pro admina
         const q = query(collection(db, "logs"), orderBy("timestamp", "desc"), limit(50));
         onSnapshot(q, (querySnapshot) => {
             const tbody = document.getElementById("stats-tbody");
@@ -337,39 +514,30 @@
         }
     </script>
 
-    <!-- Kód herní logiky -->
+    <!-- Kód komplexní herní logiky všech 9 rolí -->
     <script>
         let currentRole = "";
         let draggedItemText = "";
         let draggedItemId = "";
 
-        // Pomocné stavy pro minihry
+        // Globální časovače a intervaly
+        let activeInterval;
+        let activeTimer = 0;
+
+        // Pomocné herní proměnné pro stavy jednotlivých modulů
         let matSlots = { Carbon: false, Silicon: false };
         let matPressure = 5;
-        let matInterval, matTimer = 45;
-        
         let mechSlots = { Shield: false, Piston: false };
-        let rivetCount = 0;
-        let rhythmInterval;
-        let rhythmPos = 0;
-        let rhythmDirection = 1;
-        let mechInterval, mechTimer = 20;
-        let structuralIntegrity = 100;
+        let rivetCount = 0; let rhythmPos = 0; let rhythmDirection = 1; let structuralIntegrity = 100;
+        let aeroCanvas, aeroCtx;
+        let swSlots = { A: false, B: false }; let swSelectedModule = "";
+        let elecM = 33, elecL = 33, elecS = 34;
+        let eclssCO2 = 250;
 
-        // Reset aplikace na úvodní rozcestník
         function resetToRoleSelection() {
-            // Zastavit běžící intervaly her, pokud existují
-            clearInterval(matInterval);
-            clearInterval(rhythmInterval);
-            clearInterval(mechInterval);
-            
-            // Skrýt všechny herní panely
-            document.getElementById("materialsRole").classList.add("hidden");
-            document.getElementById("mechanicalRole").classList.add("hidden");
-            document.getElementById("aerospaceRole").classList.add("hidden");
+            clearInterval(activeInterval);
+            document.querySelectorAll(".card").forEach(c => c.classList.add("hidden"));
             document.getElementById("backToRolesNav").classList.add("hidden");
-            
-            // Zobrazit hlavní rozcestník
             document.getElementById("roleSelection").classList.remove("hidden");
             currentRole = "";
         }
@@ -378,6 +546,9 @@
             currentRole = role;
             document.getElementById("roleSelection").classList.add("hidden");
             document.getElementById("backToRolesNav").classList.remove("hidden");
+            
+            // Skrýt všechny dřívější panely
+            document.querySelectorAll(".card").forEach(c => c.classList.add("hidden"));
 
             if (role === 'materials') {
                 document.getElementById("materialsRole").classList.remove("hidden");
@@ -388,27 +559,42 @@
             } else if (role === 'aerospace') {
                 document.getElementById("aerospaceRole").classList.remove("hidden");
                 resetAerospaceGame();
+            } else if (role === 'software') {
+                document.getElementById("softwareRole").classList.remove("hidden");
+                resetSoftwareGame();
+            } else if (role === 'gnc') {
+                document.getElementById("gncRole").classList.remove("hidden");
+                resetGncGame();
+            } else if (role === 'electrical') {
+                document.getElementById("electricalRole").classList.remove("hidden");
+                resetElectricalGame();
+            } else if (role === 'eclss') {
+                document.getElementById("eclssRole").classList.remove("hidden");
+                resetEclssGame();
+            } else if (role === 'safety') {
+                document.getElementById("safetyRole").classList.remove("hidden");
+                resetSafetyGame();
+            } else if (role === 'systems') {
+                document.getElementById("systemsRole").classList.remove("hidden");
             }
         }
 
-        // --- DRAG AND DROP GLOBÁLNÍ FUNKCE ---
+        // --- DRAG AND DROP LOGIKA ---
         function allowDrop(ev) { ev.preventDefault(); }
         function drag(ev) {
             draggedItemId = ev.target.id;
             draggedItemText = ev.target.innerText;
         }
+
         function drop(ev, expectedType) {
             ev.preventDefault();
-            
-            // Ověření materiálového inženýra
+            // 1. Materiálový
             if (currentRole === 'materials') {
-                if ((expectedType === 'Carbon' && draggedItemId === 'item-carbon') && ev.target.id === 'slotA') {
-                    ev.target.innerText = draggedItemText;
-                    matSlots.Carbon = true;
+                if (expectedType === 'Carbon' && draggedItemId === 'item-carbon' && ev.target.id === 'slotA') {
+                    ev.target.innerText = draggedItemText; matSlots.Carbon = true;
                     document.getElementById(draggedItemId).style.visibility = "hidden";
-                } else if ((expectedType === 'Silicon' && draggedItemId === 'item-silicon') && ev.target.id === 'slotB') {
-                    ev.target.innerText = draggedItemText;
-                    matSlots.Silicon = true;
+                } else if (expectedType === 'Silicon' && draggedItemId === 'item-silicon' && ev.target.id === 'slotB') {
+                    ev.target.innerText = draggedItemText; matSlots.Silicon = true;
                     document.getElementById(draggedItemId).style.visibility = "hidden";
                 }
                 if (matSlots.Carbon && matSlots.Silicon) {
@@ -416,16 +602,13 @@
                     document.getElementById("mat-step3").classList.remove("hidden");
                 }
             }
-            
-            // Ověření strojního inženýra (CAD)
+            // 2. Strojní
             if (currentRole === 'mechanical') {
                 if (expectedType === 'Shield' && draggedItemId === 'cad-shield' && ev.target.id === 'cadSlotShield') {
-                    ev.target.innerText = "✓ Keramické destičky usazeny";
-                    mechSlots.Shield = true;
+                    ev.target.innerText = "✓ Keramické destičky usazeny"; mechSlots.Shield = true;
                     document.getElementById(draggedItemId).style.visibility = "hidden";
                 } else if (expectedType === 'Piston' && draggedItemId === 'cad-piston' && ev.target.id === 'cadSlotPiston') {
-                    ev.target.innerText = "✓ Hydraulický píst usazen";
-                    mechSlots.Piston = true;
+                    ev.target.innerText = "✓ Hydraulický píst usazen"; mechSlots.Piston = true;
                     document.getElementById(draggedItemId).style.visibility = "hidden";
                 }
                 if (mechSlots.Shield && mechSlots.Piston) {
@@ -433,333 +616,480 @@
                         document.getElementById("mech-step2").classList.add("hidden");
                         document.getElementById("mech-step3").classList.remove("hidden");
                         startRhythmGame();
-                    }, 1000);
+                    }, 800);
                 }
             }
         }
 
-        // --- LOGIKA: MATERIÁLOVÝ INŽENÝR ---
+        // --- 1. LOGIKA: MATERIÁLOVÝ ---
         function resetMaterialsGame() {
-            matSlots = { Carbon: false, Silicon: false };
-            matPressure = 5; matTimer = 45;
+            matSlots = { Carbon: false, Silicon: false }; matPressure = 5; activeTimer = 45;
             document.getElementById("mat-step1").classList.remove("hidden");
             document.getElementById("mat-step2").classList.add("hidden");
             document.getElementById("mat-step3").classList.add("hidden");
             document.getElementById("mat-step4").classList.add("hidden");
             document.getElementById("item-carbon").style.visibility = "visible";
             document.getElementById("item-silicon").style.visibility = "visible";
-            document.getElementById("slotA").innerText = "Slot A: Uhlík";
-            document.getElementById("slotB").innerText = "Slot B: Křemík";
-            document.getElementById("mat-temp").value = 20;
-            document.getElementById("mat-press").value = 1;
+            document.getElementById("slotA").innerText = "Slot A: Uhlík"; document.getElementById("slotB").innerText = "Slot B: Křemík";
+            document.getElementById("mat-temp").value = 20; document.getElementById("mat-press").value = 1;
             updateSliders();
         }
-
         function collectMaterials() {
-            document.getElementById("mat-storage-status").innerText = "Suroviny připraveny: 10 kg Uhlíkových vláken, 5 kg Křemíkové pryskyřice.";
+            document.getElementById("mat-storage-status").innerText = "Suroviny připraveny k přesunu.";
             logToFirebase("Materiálový", "Sběr surovin", "Úspěšně vytaženo ze skladu");
             setTimeout(() => {
                 document.getElementById("mat-step1").classList.add("hidden");
                 document.getElementById("mat-step2").classList.remove("hidden");
-            }, 1000);
+            }, 800);
         }
-
         function updateSliders() {
-            let t = document.getElementById("mat-temp").value;
-            let p = document.getElementById("mat-press").value;
-            document.getElementById("temp-val").innerText = t;
-            document.getElementById("press-val").innerText = p;
+            document.getElementById("temp-val").innerText = document.getElementById("mat-temp").value;
+            document.getElementById("press-val").innerText = document.getElementById("mat-press").value;
         }
-
         function startSynthesis() {
             let t = parseInt(document.getElementById("mat-temp").value);
             let p = parseInt(document.getElementById("mat-press").value);
-
             if (t > 1550) {
-                alert("Teplota je moc vysoká! Uhlík shořel na popel. Suroviny jsou zničeny.");
-                logToFirebase("Materiálový", "Syntéza", "KATASTROFA: Teplota moc vysoko, suroviny shořely");
-                resetMaterialsGame();
-                return;
+                alert("Teplota je moc vysoko! Uhlík shořel na popel.");
+                logToFirebase("Materiálový", "Syntéza", "KATASTROFA: Teplota nad limitem, suroviny zničeny");
+                resetMaterialsGame(); return;
             } else if (t < 1350 || p < 4 || p > 6) {
-                alert("Špatně nastavený poměr! Směs se nespojila. Zkuste to znovu.");
-                logToFirebase("Materiálový", "Syntéza", `Selhání nastavení (T: ${t}°C, P: ${p} bar)`);
+                alert("Špatné poměry prostředí. Směs se nespojila.");
                 return;
             }
-
-            // Úspěšné nastavení reaktoru -> Spuštění 45s minihry
-            logToFirebase("Materiálový", "Syntéza", "Spuštěn zážeh plazmové pece při 1450°C");
             document.getElementById("mat-step3").classList.add("hidden");
             document.getElementById("mat-step4").classList.remove("hidden");
-            
             matPressure = p;
-            matInterval = setInterval(() => {
-                matTimer--;
-                // Tlak v peci přirozeně stoupá
+            activeInterval = setInterval(() => {
+                activeTimer--;
                 matPressure += (Math.random() * 0.5);
                 document.getElementById("valve-display").innerText = `Tlak: ${matPressure.toFixed(1)} barů`;
-                
-                // Kontrola kritických mezí v reálném čase
-                if (matPressure < 4 || matPressure > 6) {
-                    document.getElementById("valve-display").style.color = "var(--danger)";
-                } else {
-                    document.getElementById("valve-display").style.color = "var(--success)";
-                }
-
-                let progressPercent = ((45 - matTimer) / 45) * 100;
-                document.getElementById("mat-progress").style.width = `${progressPercent}%`;
-                document.getElementById("mat-timer-text").innerText = `Zbývá času: ${matTimer}s`;
-
-                if (matTimer <= 0) {
-                    clearInterval(matInterval);
-                    alert("Pec pípla! Hydraulické dveře se otevírají. Získáváte: 1 ks Keramické destičky tepelného štítu.");
-                    logToFirebase("Materiálový", "Dokončení výroby", "Úspěšně vyrobena Keramická destička tepelného štítu");
+                document.getElementById("valve-display").style.color = (matPressure < 4 || matPressure > 6) ? "var(--danger)" : "var(--success)";
+                document.getElementById("mat-progress").style.width = `${((45 - activeTimer) / 45) * 100}%`;
+                document.getElementById("mat-timer-text").innerText = `Zbývá času: ${activeTimer}s`;
+                if (activeTimer <= 0) {
+                    clearInterval(activeInterval);
+                    alert("Syntéza dokončena! Vypadl 1 ks Keramické destičky tepelného štítu.");
+                    logToFirebase("Materiálový", "Výroba štítu", "Úspěšně vytvořen modul štítu a poslán dál");
                     resetMaterialsGame();
                 }
             }, 1000);
         }
+        function ventPressure() { matPressure -= 1.5; }
 
-        function ventPressure() {
-            matPressure -= 1.5;
-            if (matPressure < 1) matPressure = 1;
-            document.getElementById("valve-display").innerText = `Tlak: ${matPressure.toFixed(1)} barů`;
-        }
-
-
-        // --- LOGIKA: STROJNÍ INŽENÝR ---
+        // --- 2. LOGIKA: STROJNÍ ---
         function resetMechanicalGame() {
-            mechSlots = { Shield: false, Piston: false };
-            rivetCount = 0; structuralIntegrity = 100; mechTimer = 20;
+            mechSlots = { Shield: false, Piston: false }; rivetCount = 0; structuralIntegrity = 100; activeTimer = 20;
             document.getElementById("mech-step1").classList.remove("hidden");
             document.getElementById("mech-step2").classList.add("hidden");
             document.getElementById("mech-step3").classList.add("hidden");
             document.getElementById("mech-step4").classList.add("hidden");
             document.getElementById("cad-shield").style.visibility = "visible";
             document.getElementById("cad-piston").style.visibility = "visible";
-            document.getElementById("cadSlotShield").innerText = "Zóna pro tepelný štít (Spodek lodi)";
-            document.getElementById("cadSlotPiston").innerText = "Zóna pro píst (Střed lodi)";
-            document.getElementById("mech-materials-status").innerText = "Čekání na dodávky z výroby...";
         }
-
         function mechTakeMaterials() {
-            document.getElementById("mech-materials-status").innerText = "Materiál převzat! Nýty a píst připraveny.";
-            logToFirebase("Strojní", "Převzetí materiálu", "Vyzvednuto ze sdíleného úložiště");
+            document.getElementById("mech-materials-status").innerText = "Komponenty zafixovány do CADu.";
+            logToFirebase("Strojní", "Převzetí materiálu", "Díly připraveny k montáži");
             setTimeout(() => {
                 document.getElementById("mech-step1").classList.add("hidden");
                 document.getElementById("mech-step2").classList.remove("hidden");
-            }, 1000);
+            }, 800);
         }
-
         function startRhythmGame() {
-            rivetCount = 0;
-            document.getElementById("rivet-count").innerText = rivetCount;
-            const dot = document.getElementById("rhythmDot");
-            rhythmPos = 0;
-            
-            rhythmInterval = setInterval(() => {
+            activeInterval = setInterval(() => {
                 rhythmPos += (5 * rhythmDirection);
-                if (rhythmPos >= 90 || rhythmPos <= 0) {
-                    rhythmDirection *= -1; // Odraz ode zdi
-                }
-                dot.style.left = rhythmPos + "%";
+                if (rhythmPos >= 90 || rhythmPos <= 0) rhythmDirection *= -1;
+                document.getElementById("rhythmDot").style.left = rhythmPos + "%";
             }, 30);
         }
-
-        // Záchyt stisku klávesy pro nýtování
         window.addEventListener("keydown", function(e) {
             if (e.code === "Space" && currentRole === 'mechanical' && !document.getElementById("mech-step3").classList.contains("hidden")) {
-                e.preventDefault(); // Zabránit scrollování stránky
-                handleRivetKey();
+                e.preventDefault(); handleRivetKey();
             }
         });
-
         function handleRivetKey() {
-            // Cíl (Zelený kruh) leží kolem 76% až 84% šířky baru
             if (rhythmPos >= 74 && rhythmPos <= 86) {
                 rivetCount++;
                 document.getElementById("rivet-count").innerText = rivetCount;
                 if (rivetCount >= 10) {
-                    clearInterval(rhythmInterval);
-                    logToFirebase("Strojní", "Nýtování", "Utaženo všech 10 nýtů v perfektním rytmu");
-                    setTimeout(() => {
-                        document.getElementById("mech-step3").classList.add("hidden");
-                        document.getElementById("mech-step4").classList.remove("hidden");
-                        startVibrationTest();
-                    }, 500);
+                    clearInterval(activeInterval);
+                    logToFirebase("Strojní", "Nýtování", "Úspěšné upevnění 10 bodů");
+                    document.getElementById("mech-step3").classList.add("hidden");
+                    document.getElementById("mech-step4").classList.remove("hidden");
+                    startVibrationTest();
                 }
             } else {
-                // Minul rytmus - postih integrity pro následující zkoušku
                 structuralIntegrity -= 8;
-                if(structuralIntegrity < 40) structuralIntegrity = 40;
             }
         }
-
         function startVibrationTest() {
-            logToFirebase("Strojní", "Vibrační Test", `Spuštěna simulace s počáteční integritou ${structuralIntegrity}%`);
-            
-            mechInterval = setInterval(() => {
-                mechTimer--;
-                
-                // Pokud měl na začátku méně nýtů nebo špatný rytmus, integrita klesá dolů
-                if (rivetCount < 10 || structuralIntegrity < 90) {
-                    structuralIntegrity -= (Math.random() * 3);
+            activeInterval = setInterval(() => {
+                activeTimer--;
+                if (rivetCount < 10 || structuralIntegrity < 90) structuralIntegrity -= (Math.random() * 4);
+                if (activeTimer === 10 && structuralIntegrity < 95) {
+                    clearInterval(activeInterval);
+                    alert("KATASTROFA! V 10. vteřině upadla destička. Test selhal.");
+                    logToFirebase("Strojní", "Vibrační test", "SELHÁNÍ: Konstrukce nevydržela vibrace");
+                    resetMechanicalGame(); return;
                 }
-
-                // Nasimulování odpadnutí destičky v 10. sekundě při kritickém upevnění
-                if (mechTimer === 10 && structuralIntegrity < 95) {
-                    clearInterval(mechInterval);
-                    document.getElementById("vib-status").innerText = "KATASTROFA: V 10. vteřině upadla keramická destička! Test přerušen.";
-                    document.getElementById("vib-status").style.color = "var(--danger)";
-                    logToFirebase("Strojní", "Vibrační Test", "SELHÁNÍ: Destička odpadla v půlce testu!");
-                    alert("Test přerušen! Konstrukce nevydržela vibrace. Součástka poškozena.");
-                    resetMechanicalGame();
-                    return;
-                }
-
                 document.getElementById("integrity-display").innerText = `Strukturální integrita: ${Math.max(0, Math.floor(structuralIntegrity))}%`;
-                let progressPercent = ((20 - mechTimer) / 20) * 100;
-                document.getElementById("mech-progress").style.width = `${progressPercent}%`;
-                document.getElementById("mech-timer-text").innerText = `Doba testu: ${mechTimer}s`;
-
-                if (mechTimer <= 0) {
-                    clearInterval(mechInterval);
-                    if (structuralIntegrity >= 95) {
-                        document.getElementById("vib-status").innerText = "TEST ÚSPĚŠNÝ! Loď splňuje normy aeronautiky.";
-                        document.getElementById("vib-status").style.color = "var(--success)";
-                        logToFirebase("Strojní", "Vibrační Test", `Úspěch! Výsledná integrita ${Math.floor(structuralIntegrity)}%. Loď odeslána na rampu.`);
-                        alert("Vibrační test dokončen nad 95 %! Modul se automaticky přesouvá na odpalovací rampu.");
-                        resetMechanicalGame();
-                    } else {
-                        alert(`Test dokončen, ale integrita klesla na ${Math.floor(structuralIntegrity)}%. Kritéria nesplněna.`);
-                        logToFirebase("Strojní", "Vibrační Test", `Nedostatečná integrita (${Math.floor(structuralIntegrity)}%)`);
-                        resetMechanicalGame();
-                    }
+                document.getElementById("mech-progress").style.width = `${((20 - activeTimer) / 20) * 100}%`;
+                if (activeTimer <= 0) {
+                    clearInterval(activeInterval);
+                    logToFirebase("Strojní", "Vibrační test", `Úspěch! Integrita ${Math.floor(structuralIntegrity)}%`);
+                    alert("Vibrační zkouška dokončena! Loď zabalena na odpalovací rampu.");
+                    resetMechanicalGame();
                 }
-
             }, 1000);
         }
 
-
-        // --- LOGIKA: LETECKÝ INŽENÝR ---
-        let aeroCanvas, aeroCtx;
+        // --- 3. LOGIKA: LETECKÝ ---
         function resetAerospaceGame() {
             document.getElementById("aero-step1").classList.remove("hidden");
             document.getElementById("aero-step2").classList.add("hidden");
             document.getElementById("aero-step3").classList.add("hidden");
             document.getElementById("aero-step4").classList.add("hidden");
-            document.getElementById("aero-specs-status").innerText = "Čekání na finalizaci lodi...";
-            document.getElementById("aero-result-box").classList.add("hidden");
-            document.getElementById("generate-code-btn").disabled = true;
-            document.getElementById("aero-angle").value = 40;
         }
-
         function aeroLoadSpecs() {
-            document.getElementById("aero-specs-status").innerHTML = "<strong>Data načtena:</strong> Váha lodi: 4,2 tuny. Strukturální integrita schválena.";
-            logToFirebase("Letecký", "Načtení specifikací", "Telemetrie 4.2t úspěšně synchronizována");
+            document.getElementById("aero-specs-status").innerHTML = "Váha lodi: 4,2 tuny načtena.";
             setTimeout(() => {
                 document.getElementById("aero-step1").classList.add("hidden");
                 document.getElementById("aero-step2").classList.remove("hidden");
-            }, 1200);
+            }, 800);
         }
-
         function initAeroCanvas() {
             aeroCanvas = document.getElementById("aeroCanvas");
             aeroCtx = aeroCanvas.getContext("2d");
             drawAeroTrajectory();
         }
-
         function drawAeroTrajectory() {
             if(!aeroCtx) return;
-            // Vyčištění kreslicí plochy
             aeroCtx.clearRect(0, 0, aeroCanvas.width, aeroCanvas.height);
+            aeroCtx.fillStyle = "#64748b"; aeroCtx.font = "12px sans-serif";
+            aeroCtx.fillText("Atmosféra Země - Rychlost 7800 m/s", 15, 20);
             
-            // Popisky os
-            aeroCtx.fillStyle = "#64748b";
-            aeroCtx.font = "12px sans-serif";
-            aeroCtx.fillText("Vstup do atmosféry (Země)", 15, 20);
+            aeroCtx.strokeStyle = "var(--danger)"; aeroCtx.beginPath(); aeroCtx.moveTo(0, 70); aeroCtx.lineTo(500, 70); aeroCtx.stroke();
+            aeroCtx.strokeStyle = "var(--warning)"; aeroCtx.beginPath(); aeroCtx.moveTo(0, 150); aeroCtx.lineTo(500, 150); aeroCtx.stroke();
+            
+            let angle = (document.getElementById("aero-angle").value / 10).toFixed(1);
+            document.getElementById("angle-val").innerText = angle;
+            let targetY = 70 + (angle - 4.0) * 20;
 
-            // Horní limit (Shoření)
-            aeroCtx.strokeStyle = "var(--danger)";
-            aeroCtx.lineWidth = 2;
-            aeroCtx.beginPath();
-            aeroCtx.moveTo(0, 70);
-            aeroCtx.lineTo(500, 70);
-            aeroCtx.stroke();
-            aeroCtx.fillStyle = "var(--danger)";
-            aeroCtx.fillText("Kritická mez: Shoření v atmosféře", 320, 65);
+            aeroCtx.strokeStyle = "var(--success)"; aeroCtx.lineWidth = 3; aeroCtx.beginPath(); aeroCtx.moveTo(0, 110);
+            aeroCtx.bezierCurveTo(150, 110, 300, targetY, 500, targetY); aeroCtx.stroke();
 
-            // Dolní limit (Odraz zpět)
-            aeroCtx.strokeStyle = "var(--warning)";
-            aeroCtx.beginPath();
-            aeroCtx.moveTo(0, 150);
-            aeroCtx.lineTo(500, 150);
-            aeroCtx.stroke();
-            aeroCtx.fillStyle = "var(--warning)";
-            aeroCtx.fillText("Kritická mez: Odraz od atmosféry do kosmu", 270, 165);
-
-            // Dynamický výpočet úhlu podle posuvníku
-            let sliderVal = document.getElementById("aero-angle").value;
-            // Přepočet posuvníku (20 - 90) na stupně (approx 4.0° až 9.0°)
-            let angleDegrees = (sliderVal / 10).toFixed(1);
-            document.getElementById("angle-val").innerText = angleDegrees;
-
-            // Vykreslení křivky dráhy letu hráče
-            // Chceme aby úhel 6.2° byl přesně uprostřed (y = 110)
-            // Vzorec mapování výšky konce křivky:
-            let targetY = 70 + (angleDegrees - 4.0) * 20; 
-
-            aeroCtx.strokeStyle = "var(--success)";
-            aeroCtx.lineWidth = 3;
-            aeroCtx.beginPath();
-            aeroCtx.moveTo(0, 110);
-            aeroCtx.bezierCurveTo(150, 110, 300, targetY, 500, targetY);
-            aeroCtx.stroke();
-
-            // Aktivace tlačítka pouze pokud je trajektorie přesně uprostřed koridoru (6.0° - 6.5°)
-            if (angleDegrees >= 6.0 && angleDegrees <= 6.5) {
-                document.getElementById("generate-code-btn").disabled = false;
-            } else {
-                document.getElementById("generate-code-btn").disabled = true;
-            }
+            document.getElementById("generate-code-btn").disabled = !(angle >= 6.0 && angle <= 6.5);
         }
-
         function startAeroCompilation() {
-            let selectedAngle = (document.getElementById("aero-angle").value / 10).toFixed(1);
-            logToFirebase("Letecký", "Výpočet vektoru", `Schválen re-entry úhel ${selectedAngle}°`);
-            
             document.getElementById("aero-step3").classList.add("hidden");
             document.getElementById("aero-step4").classList.remove("hidden");
-
-            let compTimer = 0;
-            let aeroCompInterval = setInterval(() => {
-                compTimer++;
-                let pct = Math.floor((compTimer / 30) * 100);
-                
-                document.getElementById("aero-progress").style.width = `${pct}%`;
-                document.getElementById("aero-timer-text").innerText = `Kompilace: ${pct}% (Zbývá ${30 - compTimer}s)`;
-
-                if (compTimer >= 30) {
-                    clearInterval(aeroCompInterval);
+            activeTimer = 0;
+            activeInterval = setInterval(() => {
+                activeTimer++;
+                let pct = Math.floor((activeTimer / 30) * 100);
+                document.getElementById("aero-progress").style.width = pct + "%";
+                document.getElementById("aero-timer-text").innerText = `Kompilace: ${pct}%`;
+                if (activeTimer >= 30) {
+                    clearInterval(activeInterval);
                     document.getElementById("aero-result-box").classList.remove("hidden");
-                    logToFirebase("Letecký", "Kompilace autopilota", "TELEMETRIE COMPILATION SUCCESS: Letový kód nahrán na loď");
-                    alert("Superpočítač dokončil výpočty! Palubní kód byl úspěšně nahrán do paměti rakety.");
+                    logToFirebase("Letecký", "Generování kódu", "LET RE-ENTRY PŘIPRAVEN – DATA SYNCHRONIZOVÁNA");
                 }
             }, 1000);
         }
 
+        // --- 4. LOGIKA: SOFTWAROVÝ INŽENÝR ---
+        function resetSoftwareGame() {
+            swSlots = { A: false, B: false }; swSelectedModule = "";
+            document.getElementById("sw-step1").classList.remove("hidden");
+            document.getElementById("sw-step2").classList.add("hidden");
+            document.getElementById("sw-step3").classList.add("hidden");
+            document.getElementById("sw-step4").classList.add("hidden");
+            document.getElementById("swSlotA").innerText = "Vstup: Senzor (Slot A)";
+            document.getElementById("swSlotB").innerText = "Výstup: Akce (Slot B)";
+            document.getElementById("sw-i1").style.visibility = "visible";
+            document.getElementById("sw-i2").style.visibility = "visible";
+        }
+        function swSelectModule(moduleName) {
+            swSelectedModule = moduleName;
+            logToFirebase("Softwarový", "Výběr modulu", `Zvolen modul: ${moduleName}`);
+            document.getElementById("sw-step1").classList.add("hidden");
+            document.getElementById("sw-step2").classList.remove("hidden");
+        }
+        function dropSw(ev, slot) {
+            ev.preventDefault();
+            if (slot === 'A' && draggedItemId === 'sw-i1') {
+                ev.target.innerText = "✓ Senzor přiblížení zapojen"; swSlots.A = true;
+                document.getElementById(draggedItemId).style.visibility = "hidden";
+            } else if (slot === 'B' && draggedItemId === 'sw-i2') {
+                ev.target.innerText = "✓ Zážeh trysky propojen"; swSlots.B = true;
+                document.getElementById(draggedItemId).style.visibility = "hidden";
+            }
+            if (swSlots.A && swSlots.B) {
+                setTimeout(() => {
+                    document.getElementById("sw-step2").classList.add("hidden");
+                    document.getElementById("sw-step3").classList.remove("hidden");
+                }, 800);
+            }
+        }
+        function swCompileCode() {
+            let ram = parseInt(document.getElementById("sw-ram-slider").value);
+            document.getElementById("sw-step3").classList.add("hidden");
+            document.getElementById("sw-step4").classList.remove("hidden");
+            
+            let currentSec = 0;
+            document.getElementById("sw-compile-status").innerText = "Spouštím syntaktickou analýzu kódu...";
+            
+            activeInterval = setInterval(() => {
+                currentSec++;
+                let pct = Math.floor((currentSec / 30) * 100);
+                document.getElementById("sw-progress").style.width = pct + "%";
+                document.getElementById("sw-timer-text").innerText = `Testování modulů: ${pct}%`;
 
-        // --- ADMINISTRACE A AUTENTIZACE ---
+                if (currentSec === 15 && ram > 128) {
+                    clearInterval(activeInterval);
+                    document.getElementById("sw-compile-status").innerText = "CRASH: Kompilace selhala! Bug v řádku 42. Přejití limitu RAM počítače.";
+                    document.getElementById("sw-compile-status").style.color = "var(--danger)";
+                    logToFirebase("Softwarový", "Kompilace", "CHYBA: Selhání kompilace na řádku 42 - Přetečení RAM");
+                    setTimeout(() => { resetSoftwareGame(); }, 4000);
+                    return;
+                }
+
+                if (currentSec >= 30) {
+                    clearInterval(activeInterval);
+                    document.getElementById("sw-compile-status").innerText = "SUCCESS: Firmware úspěšně kompilován a nahrán.";
+                    document.getElementById("sw-compile-status").style.color = "var(--success)";
+                    logToFirebase("Softwarový", "Kompilace", `Úspěch! Modul ${swSelectedModule} optimalizován na ${ram} kB.`);
+                    setTimeout(() => { resetSoftwareGame(); }, 2000);
+                }
+            }, 1000);
+        }
+
+        // --- 5. LOGIKA: GNC INŽENÝR ---
+        function resetGncGame() {
+            document.getElementById("gnc-step1").classList.remove("hidden");
+            document.getElementById("gnc-step2").classList.add("hidden");
+            document.getElementById("gnc-step3").classList.add("hidden");
+        }
+        function gncInitMap() {
+            logToFirebase("GNC", "Výpočet mapy", "Inicializována gravitační matice sluneční soustavy");
+            document.getElementById("gnc-step1").classList.add("hidden");
+            document.getElementById("gnc-step2").classList.remove("hidden");
+        }
+        function gncStartSimulation() {
+            let node = parseInt(document.getElementById("gnc-node-slider").value);
+            document.getElementById("gnc-step2").classList.add("hidden");
+            document.getElementById("gnc-step3").classList.remove("hidden");
+            
+            let sec = 0;
+            activeInterval = setInterval(() => {
+                sec++;
+                document.getElementById("gnc-progress").style.width = `${(sec / 20) * 100}%`;
+                document.getElementById("gnc-timer-text").innerText = `Simulace: ${20 - sec}s`;
+
+                if (sec === 10 && (node < 70 || node > 80)) {
+                    clearInterval(activeInterval);
+                    document.getElementById("gnc-sim-status").innerText = "SELHÁNÍ: Loď minula orbitální okno a zmizela v černém prázdnu.";
+                    document.getElementById("gnc-sim-status").style.color = "var(--danger)";
+                    logToFirebase("GNC", "Simulace", `Ztráta lodi v prázdnu z důvodu chybného uzlu (${node}%)`);
+                    setTimeout(() => { resetGncGame(); }, 4000);
+                    return;
+                }
+
+                if (sec >= 20) {
+                    clearInterval(activeInterval);
+                    document.getElementById("gnc-sim-status").innerText = "ÚSPĚCH: Trajektorie stabilní. Navigační plán exportován.";
+                    document.getElementById("gnc-sim-status").style.color = "var(--success)";
+                    logToFirebase("GNC", "Simulace", "Navigační plán kompletně exportován pro letecký úsek.");
+                    setTimeout(() => { resetGncGame(); }, 2000);
+                }
+            }, 1000);
+        }
+
+        // --- 6. LOGIKA: ELEKTROTECHNICKÝ ---
+        function resetElectricalGame() {
+            document.getElementById("elec-step1").classList.remove("hidden");
+            document.getElementById("elec-step2").classList.add("hidden");
+            document.getElementById("elec-step3").classList.add("hidden");
+        }
+        function elecLoadCircuit() {
+            document.getElementById("elec-step1").classList.add("hidden");
+            document.getElementById("elec-step2").classList.remove("hidden");
+            balanceElec();
+        }
+        function balanceElec() {
+            elecM = parseInt(document.getElementById("elec-m").value);
+            elecL = parseInt(document.getElementById("elec-l").value);
+            elecS = parseInt(document.getElementById("elec-s").value);
+            
+            document.getElementById("e-m-val").innerText = elecM;
+            document.getElementById("e-l-val").innerText = elecL;
+            document.getElementById("e-s-val").innerText = elecS;
+
+            let total = elecM + elecL + elecS;
+            
+            let mWidth = (elecM / total) * 100;
+            let lWidth = (elecL / total) * 100;
+            let sWidth = (elecS / total) * 100;
+            
+            document.getElementById("bar-m").style.width = mWidth + "%";
+            document.getElementById("bar-l").style.width = lWidth + "%";
+            document.getElementById("bar-s").style.width = sWidth + "%";
+
+            if (total === 100) {
+                document.getElementById("elec-total-warn").innerText = "Odběr sítě vybalancován (100 %).";
+                document.getElementById("elec-total-warn").style.color = "var(--success)";
+                document.getElementById("elec-test-btn").disabled = false;
+            } else {
+                document.getElementById("elec-total-warn").innerText = `Chyba! Celkový součet je ${total} %, musí být přesně 100 %.`;
+                document.getElementById("elec-total-warn").style.color = "var(--danger)";
+                document.getElementById("elec-test-btn").disabled = true;
+            }
+        }
+        function elecStartTest() {
+            document.getElementById("elec-step2").classList.add("hidden");
+            document.getElementById("elec-step3").classList.remove("hidden");
+            let sec = 0;
+            activeInterval = setInterval(() => {
+                sec++;
+                document.getElementById("elec-progress").style.width = `${(sec / 15) * 100}%`;
+                document.getElementById("elec-timer-text").innerText = `Doba měření: ${15 - sec}s`;
+
+                if (sec === 7 && (elecM !== 40 || elecL !== 30 || elecS !== 30)) {
+                    clearInterval(activeInterval);
+                    document.getElementById("elec-status").innerText = "SKRAT: Vyhořely hlavní pojistky! Proudové větve přetíženy. Přidejte kondenzátory.";
+                    document.getElementById("elec-status").style.color = "var(--danger)";
+                    logToFirebase("Elektrotechnický", "Zátěžový test", `Selhání: Pojistky vyhořely při distribuci [${elecM}/${elecL}/${elecS}]`);
+                    setTimeout(() => { resetElectricalGame(); }, 4000);
+                    return;
+                }
+
+                if (sec >= 15) {
+                    clearInterval(activeInterval);
+                    document.getElementById("elec-status").innerText = "VŠECHNY CIRCUITY STABILNÍ. Měření osciloskopu v pořádku.";
+                    document.getElementById("elec-status").style.color = "var(--success)";
+                    logToFirebase("Elektrotechnický", "Zátěžový test", "Úspěšná distribuce energie (40/30/30) pod proudem.");
+                    setTimeout(() => { resetElectricalGame(); }, 2000);
+                }
+            }, 1000);
+        }
+
+        // --- 7. LOGIKA: ECLSS ---
+        function resetEclssGame() {
+            eclssCO2 = 250;
+            document.getElementById("eclss-step1").classList.remove("hidden");
+            document.getElementById("eclss-step2").classList.add("hidden");
+            document.getElementById("eclss-step3").classList.add("hidden");
+        }
+        function eclssInitChamber() {
+            document.getElementById("eclss-step1").classList.add("hidden");
+            document.getElementById("eclss-step2").classList.remove("hidden");
+        }
+        function eclssStartTest() {
+            document.getElementById("eclss-step2").classList.add("hidden");
+            document.getElementById("eclss-step3").classList.remove("hidden");
+            activeTimer = 40;
+            logToFirebase("ECLSS", "Zátěžový test vzduchu", "Virtuální astronaut uzavřen do testovací komory");
+
+            activeInterval = setInterval(() => {
+                activeTimer--;
+                eclssCO2 += Math.floor(Math.random() * 20) + 15;
+                document.getElementById("eclss-monitor").innerText = `CO2: ${eclssCO2} ppm | O2: 20.8% | Teplota: 22.4 °C`;
+
+                if (eclssCO2 > 500) {
+                    clearInterval(activeInterval);
+                    document.getElementById("eclss-monitor").innerText = `KRITICKÝ STAV: CO2 ${eclssCO2} ppm! Astronaut ztratil vědomí.`;
+                    document.getElementById("eclss-monitor").style.color = "var(--danger)";
+                    logToFirebase("ECLSS", "Zátěžový test", `Asfixie subjektu z důvodu zanesení filtrů (${eclssCO2} ppm)`);
+                    setTimeout(() => { resetEclssGame(); }, 4000);
+                    return;
+                }
+
+                document.getElementById("eclss-progress").style.width = `${((40 - activeTimer) / 40) * 100}%`;
+                document.getElementById("eclss-timer-text").innerText = `Čas testu: ${activeTimer}s`;
+
+                if (activeTimer <= 0) {
+                    clearInterval(activeInterval);
+                    alert("Astronaut přežil zkoušku bez jakékoliv ztráty vědomí! Skrubry fungují.");
+                    logToFirebase("ECLSS", "Zátěžový test", "Subjekt úspěšně dokončil 40s cyklus v bezpečné normě CO2");
+                    resetEclssGame();
+                }
+            }, 1000);
+        }
+        function eclssCleanFilters() {
+            eclssCO2 -= 120;
+            if (eclssCO2 < 150) eclssCO2 = 150;
+        }
+
+        // --- 8. LOGIKA: SAFETY ENGINEER ---
+        function resetSafetyGame() {
+            document.getElementById("safety-step1").classList.remove("hidden");
+            document.getElementById("safety-step2").classList.add("hidden");
+            document.getElementById("safety-step3").classList.add("hidden");
+            document.getElementById("safety-model-status").innerText = "Čekání na síťový build...";
+        }
+        function safetyLoadModel() {
+            document.getElementById("safety-model-status").innerText = "Kompletní model rakety úspěšně načten z lokální CAD sítě.";
+            setTimeout(() => {
+                document.getElementById("safety-step1").classList.add("hidden");
+                document.getElementById("safety-step2").classList.remove("hidden");
+            }, 800);
+        }
+        function safetyStartMonteCarlo() {
+            let sc = document.getElementById("safety-scenario").value;
+            document.getElementById("safety-step2").classList.add("hidden");
+            document.getElementById("safety-step3").classList.remove("hidden");
+            logToFirebase("Safety", "Monte Carlo simulace", `Spuštěna simulace hrozby: ${sc}`);
+
+            let sec = 0;
+            activeInterval = setInterval(() => {
+                sec++;
+                document.getElementById("safety-progress").style.width = `${(sec / 35) * 100}%`;
+                document.getElementById("safety-timer-text").innerText = `Generování rizikových matic: ${35 - sec}s`;
+
+                if (sec >= 35) {
+                    clearInterval(activeInterval);
+                    let res = "Pravděpodobnost přežití: 72 % - Kritická chyba: Selhání záložní baterie.";
+                    alert(`Report simulace hotov:\n${res}\n\nStart byl zablokován do nápravy systému elektrotechnikem.`);
+                    logToFirebase("Safety", "Report rizik", `Generován audit: 72% šance na přežití posádky při scénáři: ${sc}`);
+                    resetSafetyGame();
+                }
+            }, 1000);
+        }
+
+        // --- 9. LOGIKA: SYSTÉMOVÝ INŽENÝR ---
+        function sysApproveChanges() {
+            document.getElementById("sys-compiling").classList.remove("hidden");
+            let sec = 0;
+            logToFirebase("Systémový", "Schválení změn", "Zahájena celková rekompilace rozpočtu a váhových limitů lodi");
+            
+            activeInterval = setInterval(() => {
+                sec++;
+                document.getElementById("sys-progress").style.width = `${(sec / 10) * 100}%`;
+                if (sec >= 10) {
+                    clearInterval(activeInterval);
+                    document.getElementById("sys-compiling").classList.add("hidden");
+                    document.getElementById("sys-ready-status").innerText = "VŠECHNY KONTROLY SCHVÁLENY – READY K ODLETU";
+                    document.getElementById("sys-ready-status").style.color = "var(--success)";
+                    document.getElementById("sys-final-zone").classList.remove("hidden");
+                }
+            }, 1000);
+        }
+        function sysLaunchRocket() {
+            alert("🚀 3... 2... 1... START MISSE! Raketa úspěšně odstartovala na oběžnou dráhu! Všichni inženýři odvedli špičkovou práci.");
+            logToFirebase("Systémový", "LAUNCH", "Mise zahájena. Raketa opustila odpalovací rampu.");
+            resetToRoleSelection();
+        }
+
+        // --- ADMINISTRACE ---
         function openAdmin() {
             let pass = prompt("Zadejte bezpečnostní heslo správce misí:");
             if (pass === "1234") {
                 document.getElementById("adminPanel").classList.remove("hidden");
             } else {
-                alert("Přístup odepřen! Neplatné heslo.");
+                alert("Přístup odepřen!");
             }
         }
-
-        function closeAdmin() {
-            document.getElementById("adminPanel").classList.add("hidden");
-        }
+        function closeAdmin() { document.getElementById("adminPanel").classList.add("hidden"); }
     </script>
 </body>
 </html>
